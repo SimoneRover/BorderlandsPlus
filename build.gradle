@@ -1,0 +1,63 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.javamodularity.moduleplugin' version '1.8.12'
+    id 'idea'
+}
+
+group = 'com.rover'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java']
+    main.resources.srcDirs = ['src/main/resources']
+    test.java.srcDirs = ['src/test/java']
+    test.resources.srcDirs = ['src/test/resources']
+}
+
+application {
+    mainClass = 'com.rover.blplus.Launcher'
+}
+
+java {
+    modularity.inferModulePath.set(false)
+}
+
+javafx {
+    version = '21'
+    modules = [ 'javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing']
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+    }
+}
+
+dependencies {
+    implementation project(':RoverUtils')
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    runtimeOnly 'org.apache.logging.log4j:log4j-core:2.25.1'
+}
+
+jar {
+    manifest {
+        attributes (
+                'Main-Class': application.mainClass,
+                'Class-Path': sourceSets.main.runtimeClasspath.collect { it.name }.join(" ")
+        )
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
