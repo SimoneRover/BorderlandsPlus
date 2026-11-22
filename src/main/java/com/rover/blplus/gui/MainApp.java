@@ -14,6 +14,7 @@ import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 public class MainApp extends Application {
 
@@ -71,6 +72,8 @@ public class MainApp extends Application {
         errorAlert.setTitle("Borderlands+ - Error");
         errorAlert.setContentText(message);
         errorAlert.setHeaderText(header);
+        errorAlert.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(getClass().getClassLoader().getResource("css/theme.css")).toExternalForm());
         errorAlert.showAndWait();
     }
 

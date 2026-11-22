@@ -59,7 +59,7 @@ public class AttachController {
     }
 
     public void checkOS() {
-        label.setText("Checking system compatibility");
+        setStatus("Checking system compatibility", null);
         showLoading();
 
         OS operatingSys = OSUtils.getOS();
@@ -70,7 +70,7 @@ public class AttachController {
     }
 
     public void attach() {
-        label.setText("Looking for \"Borderlands GOTY Enhanced\" window");
+        setStatus("Looking for \"Borderlands GOTY Enhanced\" window", null);
         showLoading();
 
         AttachTask task = new AttachTask();
@@ -79,7 +79,7 @@ public class AttachController {
             if (attached) {
                 // Open trainer window
                 log.trace("Attached to process");
-                label.setText("Attached to \"Borderlands GOTY Enhanced\" process");
+                setStatus("Attached to \"Borderlands GOTY Enhanced\" process", "success");
                 hideLoading();
 
                 try {
@@ -89,19 +89,27 @@ public class AttachController {
                 }
             } else {
                 log.trace("Borderlands process not found or an error occurred during attach process");
-                label.setText("Could not attach to \"Borderlands GOTY Enhanced\" process");
+                setStatus("Could not attach to \"Borderlands GOTY Enhanced\" process", "error");
                 showButton();
             }
         });
         task.setOnFailed(workerStateEvent -> {
             log.trace("Attach task failed");
-            label.setText("Could not attach to \"Borderlands GOTY Enhanced\" process");
+            setStatus("Could not attach to \"Borderlands GOTY Enhanced\" process", "error");
             showButton();
         });
         Thread t = new Thread(task, "attach-thread");
         t.setDaemon(true);
         log.trace("Starting attach task");
         t.start();
+    }
+
+    private void setStatus(String text, String state) {
+        label.setText(text);
+        label.getStyleClass().removeAll("error", "success");
+        if (state != null) {
+            label.getStyleClass().add(state);
+        }
     }
 
     private void showLoading() {

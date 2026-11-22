@@ -18,7 +18,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -148,31 +147,22 @@ public class MainController {
     public void toggleGodMode(MouseEvent mouseEvent) {
         HackManager.getInstance().toggleGodMode();
         out("Toggled god mode");
-        if (HackManager.getInstance().isGodModeEnabled()) {
-            godMode.setTextFill(Color.GREEN);
-        } else {
-            godMode.setTextFill(Color.RED);
-        }
+        setToggleState(godMode, HackManager.getInstance().isGodModeEnabled());
     }
 
     public void toggleUnlimitedAmmo(MouseEvent mouseEvent) {
         HackManager.getInstance().toggleUnlimitedAmmo();
         out("Toggled unlimited ammo");
-        if (HackManager.getInstance().isUnlimitedAmmoEnabled()) {
-            unlimitedAmmo.setTextFill(Color.GREEN);
-        } else {
-            unlimitedAmmo.setTextFill(Color.RED);
-        }
+        setToggleState(unlimitedAmmo, HackManager.getInstance().isUnlimitedAmmoEnabled());
     }
 
     public void toggleMaxWeaponDmg(MouseEvent mouseEvent) {
         HackManager.getInstance().toggleMaxWeaponDmg();
         out("Toggled max weapon damage");
+        setToggleState(maxWeaponDmg, HackManager.getInstance().isMaxWeaponDmgEnabled());
         if (HackManager.getInstance().isMaxWeaponDmgEnabled()) {
-            maxWeaponDmg.setTextFill(Color.GREEN);
             writeInjectionJump();
         } else {
-            maxWeaponDmg.setTextFill(Color.RED);
             restoreOriginalCode();
         }
     }
@@ -180,11 +170,7 @@ public class MainController {
     public void toggleNoSkillCooldown(MouseEvent mouseEvent) {
         HackManager.getInstance().toggleNoSkillCooldown();
         out("Toggled no skill cooldown");
-        if (HackManager.getInstance().isNoSkillCooldownEnabled()) {
-            noSkillCd.setTextFill(Color.GREEN);
-        } else {
-            noSkillCd.setTextFill(Color.RED);
-        }
+        setToggleState(noSkillCd, HackManager.getInstance().isNoSkillCooldownEnabled());
     }
 
     public void maxCash(MouseEvent mouseEvent) {
@@ -217,6 +203,13 @@ public class MainController {
             out("ERROR", "Could not resolve shop timer pointer chain: " + e.getMessage());
         } catch (BrokenPointerChainException e) {
             out("ERROR", "Broken pointer chain for shop reset: " + e.getMessage());
+        }
+    }
+
+    private void setToggleState(Button button, boolean enabled) {
+        button.getStyleClass().remove("toggle-on");
+        if (enabled) {
+            button.getStyleClass().add("toggle-on");
         }
     }
 

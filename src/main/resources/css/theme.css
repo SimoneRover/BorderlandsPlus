@@ -1,0 +1,336 @@
+/* Borderlands+ - dark theme */
+
+.root {
+    -bg: #14161c;
+    -surface: #1c1f27;
+    -surface-hover: #252935;
+    -border: #2c313d;
+    -text: #e8eaf0;
+    -text-muted: #8b92a5;
+    -accent: #f5a623;
+    -accent-hover: #ffb93f;
+    -on: #2ecc71;
+    -off: #e5484d;
+    -info: #4aa3ff;
+
+    -fx-base: -surface;
+    -fx-background: -bg;
+    -fx-background-color: -bg;
+    -fx-font-family: "Segoe UI", "System";
+    -fx-font-size: 13px;
+    -fx-text-fill: -text;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.label {
+    -fx-text-fill: -text;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+    -fx-background-color: -surface;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-padding: 16 24 16 24;
+}
+
+.app-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text;
+}
+
+.app-title-accent {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -accent;
+}
+
+.app-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: -text-muted;
+}
+
+.status-pill {
+    -fx-background-color: rgba(46, 204, 113, 0.15);
+    -fx-background-radius: 20;
+    -fx-padding: 5 12 5 12;
+}
+
+.status-pill-label {
+    -fx-text-fill: -on;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.status-dot {
+    -fx-fill: -on;
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 12;
+    -fx-border-color: -border;
+    -fx-border-radius: 12;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 14, 0.1, 0, 4);
+}
+
+.card-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-muted;
+}
+
+.field-label {
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 12px;
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+    -fx-background-color: -surface-hover;
+    -fx-background-radius: 8;
+    -fx-border-color: -border;
+    -fx-border-radius: 8;
+    -fx-text-fill: -text;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #2f3443;
+    -fx-border-color: #3a4050;
+}
+
+.button:pressed {
+    -fx-background-color: #1a1d25;
+}
+
+/* Cheat toggles: OFF = red accent, ON = green accent */
+.toggle-card {
+    -fx-alignment: CENTER_LEFT;
+    -fx-max-width: infinity;
+    -fx-border-color: -border -border -border -off;
+    -fx-border-width: 1 1 1 4;
+    -fx-border-radius: 8;
+    -fx-padding: 12 16 12 16;
+}
+
+.toggle-card:hover {
+    -fx-border-color: #3a4050 #3a4050 #3a4050 -off;
+}
+
+.toggle-card.toggle-on {
+    -fx-background-color: rgba(46, 204, 113, 0.12);
+    -fx-border-color: rgba(46, 204, 113, 0.35) rgba(46, 204, 113, 0.35) rgba(46, 204, 113, 0.35) -on;
+}
+
+.toggle-card.toggle-on:hover {
+    -fx-background-color: rgba(46, 204, 113, 0.2);
+}
+
+/* One-shot actions */
+.action-button {
+    -fx-max-width: infinity;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: -border -border -border -info;
+    -fx-border-width: 1 1 1 4;
+    -fx-padding: 12 16 12 16;
+}
+
+.action-button:hover {
+    -fx-border-color: #3a4050 #3a4050 #3a4050 -info;
+}
+
+.action-button:pressed {
+    -fx-background-color: rgba(74, 163, 255, 0.25);
+}
+
+/* Primary button (attach / retry) */
+.primary-button {
+    -fx-background-color: -accent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #1a1300;
+    -fx-padding: 12 28 12 28;
+    -fx-font-size: 14px;
+}
+
+.primary-button:hover {
+    -fx-background-color: -accent-hover;
+    -fx-border-color: transparent;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #d98e12;
+}
+
+/* ---------- ComboBox ---------- */
+
+.combo-box {
+    -fx-background-color: -surface-hover;
+    -fx-background-radius: 8;
+    -fx-border-color: -border;
+    -fx-border-radius: 8;
+    -fx-pref-height: 34;
+}
+
+.combo-box:hover {
+    -fx-border-color: -accent;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text;
+    -fx-padding: 6 10 6 10;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: -text-muted;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -surface;
+    -fx-background-radius: 8;
+    -fx-border-color: -border;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 12, 0.1, 0, 4);
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: -surface;
+    -fx-text-fill: -text;
+    -fx-padding: 8 12 8 12;
+}
+
+.combo-box-popup .list-cell:filled:hover,
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: -surface-hover;
+    -fx-text-fill: -accent;
+}
+
+/* ---------- Console ---------- */
+
+.console {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: #0e1015;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: -border;
+    -fx-text-fill: #b9c0d0;
+    -fx-highlight-fill: rgba(245, 166, 35, 0.4);
+    -fx-highlight-text-fill: white;
+    -fx-font-family: "Consolas", "Cascadia Mono", monospace;
+    -fx-font-size: 12px;
+}
+
+.console .content {
+    -fx-background-color: #0e1015;
+    -fx-background-radius: 10;
+    -fx-padding: 6;
+}
+
+/* ---------- Scrollbars ---------- */
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #3a4050;
+    -fx-background-radius: 6;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #4b5266;
+}
+
+.scroll-bar .track,
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button,
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane,
+.scroll-pane > .viewport,
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}
+
+/* ---------- Attach screen ---------- */
+
+.attach-root {
+    -fx-background-color: radial-gradient(center 50% 40%, radius 70%, #20232d 0%, #14161c 100%);
+}
+
+.attach-card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 16;
+    -fx-border-color: -border;
+    -fx-border-radius: 16;
+    -fx-padding: 36 48 36 48;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 24, 0.1, 0, 8);
+}
+
+.attach-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text;
+}
+
+.attach-title-accent {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -accent;
+}
+
+.attach-status {
+    -fx-font-size: 13px;
+    -fx-text-fill: -text-muted;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
+
+.attach-status.error {
+    -fx-text-fill: -off;
+}
+
+.attach-status.success {
+    -fx-text-fill: -on;
+}
+
+/* ---------- Alerts / dialogs ---------- */
+
+.dialog-pane {
+    -fx-background-color: -surface;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: -text;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: -surface-hover;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-background-color: -surface;
+}
