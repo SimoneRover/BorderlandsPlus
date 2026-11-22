@@ -29,7 +29,7 @@ java {
 
 javafx {
     version = '21'
-    modules = [ 'javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing']
+    modules = [ 'javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.fxml' ]
 }
 
 idea {
@@ -60,4 +60,124 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+// ---------------------------------------------------------------------------
+// Release per Windows (jpackage, incluso nel JDK 21)
+//   .\gradlew :BorderlandsPlus:releaseWindows
+//       -> build/release/BorderlandsPlus-<versione>-windows-portable.zip
+//   .\gradlew :BorderlandsPlus:jpackageInstaller -PinstallerType=exe   (oppure msi)
+//       -> richiede WiX Toolset 3.x nel PATH
+// ---------------------------------------------------------------------------
+def appName = 'BorderlandsPlus'
+def jpackageInputDir = layout.buildDirectory.dir('jpackage-input')
+def jpackageDestDir = layout.buildDirectory.dir('jpackage')
+def installerDestDir = layout.buildDirectory.dir('installer')
+def iconFile = file('src/main/packaging/BorderlandsPlus.ico')
+
+// Moduli Java richiesti a runtime dal fat jar (JavaFX, JNA, log4j)
+def runtimeModules = 'java.desktop,java.logging,java.xml,java.naming,java.management,java.scripting,java.sql,java.prefs,jdk.unsupported'
+
+def jpackageExecutable = {
+    def exe = new File(System.getProperty('java.home'), 'bin/jpackage.exe')
+    if (!exe.exists()) {
+        throw new GradleException("jpackage non trovato in ${exe}: serve un JDK 14+ (non un JRE) per eseguire Gradle")
+    }
+    return exe.absolutePath
+}
+
+// jpackage fallisce se la cartella di destinazione esiste gia'. Su Windows la delete di Gradle puo' fallire
+// (file watching del daemon, antivirus che scansiona l'exe appena generato): in tal caso si usa rmdir e si riprova.
+def cleanDir = { File dir ->
+    for (int attempt = 1; dir.exists(); attempt++) {
+        try {
+            project.delete(dir)
+        } catch (Exception e) {
+            new ProcessBuilder('cmd', '/c', 'rmdir', '/s', '/q', dir.absolutePath).inheritIO().start().waitFor()
+            if (dir.exists()) {
+                if (attempt >= 5) throw e
+                Thread.sleep(2000)
+            }
+        }
+    }
+}
+
+// Copia nel solo input di jpackage il fat jar (evita di includere altri file presenti in build/libs)
+tasks.register('prepareJpackageInput', Sync) {
+    dependsOn tasks.named('jar')
+    from(tasks.named('jar').map { it.archiveFile })
+    into jpackageInputDir
+}
+
+def commonJpackageArgs = { String type, File dest ->
+    def jarName = tasks.named('jar').get().archiveFileName.get()
+    def args = [
+            jpackageExecutable(),
+            '--type', type,
+            '--name', appName,
+            '--app-version', project.version.toString(),
+            '--vendor', 'Rover',
+            '--description', 'Trainer per Borderlands GOTY Enhanced',
+            '--input', jpackageInputDir.get().asFile.absolutePath,
+            '--main-jar', jarName,
+            '--main-class', application.mainClass.get(),
+            '--add-modules', runtimeModules,
+            '--java-options', '-Dfile.encoding=UTF-8',
+            '--dest', dest.absolutePath
+    ]
+    if (iconFile.exists()) {
+        args += ['--icon', iconFile.absolutePath]
+    }
+    return args
+}
+
+// App-image: cartella con BorderlandsPlus.exe + runtime Java incluso (non serve Java installato)
+tasks.register('jpackageImage', Exec) {
+    group = 'distribution'
+    description = 'Crea l\'app-image Windows (exe + runtime) con jpackage'
+    dependsOn tasks.named('prepareJpackageInput')
+    doFirst {
+        cleanDir(jpackageDestDir.get().asFile)
+        commandLine commonJpackageArgs('app-image', jpackageDestDir.get().asFile)
+    }
+    // commandLine verra' impostato in doFirst
+    commandLine 'cmd', '/c', 'echo'
+}
+
+// Zip portatile pronto da distribuire
+tasks.register('releaseZip', Zip) {
+    group = 'distribution'
+    description = 'Crea lo zip portatile della release Windows'
+    dependsOn tasks.named('jpackageImage')
+    from(jpackageDestDir.map { it.dir(appName) }) {
+        into appName
+    }
+    archiveFileName = "${appName}-${project.version}-windows-portable.zip"
+    destinationDirectory = layout.buildDirectory.dir('release')
+}
+
+tasks.register('releaseWindows') {
+    group = 'distribution'
+    description = 'Genera la release Windows (zip portatile con exe e runtime)'
+    dependsOn tasks.named('releaseZip')
+}
+
+// Installer opzionale (.exe / .msi): richiede WiX Toolset 3.x installato e nel PATH
+tasks.register('jpackageInstaller', Exec) {
+    group = 'distribution'
+    description = 'Crea un installer Windows (-PinstallerType=exe|msi), richiede WiX 3.x'
+    dependsOn tasks.named('prepareJpackageInput')
+    doFirst {
+        def type = (project.findProperty('installerType') ?: 'exe').toString()
+        if (!(type in ['exe', 'msi'])) {
+            throw new GradleException("installerType deve essere 'exe' o 'msi' (ricevuto: ${type})")
+        }
+        cleanDir(installerDestDir.get().asFile)
+        commandLine commonJpackageArgs(type, installerDestDir.get().asFile) + [
+                '--win-menu', '--win-shortcut', '--win-dir-chooser', '--win-per-user-install',
+                '--win-menu-group', 'Borderlands+',
+                '--win-upgrade-uuid', '6f1d2c0e-4b7a-4a53-9c1e-2d8b5a7e9f31'
+        ]
+    }
+    commandLine 'cmd', '/c', 'echo'
 }

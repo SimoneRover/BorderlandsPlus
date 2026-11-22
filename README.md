@@ -70,12 +70,50 @@ Per compilare soltanto:
 
 Il punto di ingresso è `com.rover.blplus.Launcher`.
 
+## Distribuzione (release Windows)
+
+La release è un'**app-image portatile**: una cartella con `BorderlandsPlus.exe` e il runtime Java incluso, quindi chi la usa **non deve installare Java**. Viene creata con `jpackage`, già presente nel JDK 21.
+
+Dalla cartella radice del workspace (serve un **JDK**, non un semplice JRE, per eseguire Gradle):
+
+```powershell
+.\gradlew :BorderlandsPlus:releaseWindows
+```
+
+Il risultato è `BorderlandsPlus/build/release/BorderlandsPlus-<versione>-windows-portable.zip` (circa 42 MB). La versione è quella definita in `build.gradle`.
+
+Per usarla: estrai lo zip in una cartella qualsiasi ed esegui `BorderlandsPlus\BorderlandsPlus.exe`. I log vengono scritti in `%LOCALAPPDATA%\BorderlandsPlus\logs\main.log`.
+
+| Task Gradle | Cosa fa |
+|---|---|
+| `jpackageImage` | Crea la cartella `build/jpackage/BorderlandsPlus` (exe + runtime). |
+| `releaseZip` | Comprime l'app-image nello zip portatile. |
+| `releaseWindows` | Esegue i due passaggi precedenti. |
+| `jpackageInstaller` | Crea un installer `.exe` o `.msi` (vedi sotto). |
+
+### Installer `.exe` / `.msi` (opzionale)
+
+`jpackage` può anche generare un vero installer con voce nel menu Start, scorciatoia sul desktop e scelta della cartella. Serve [WiX Toolset 3.x](https://github.com/wixtoolset/wix3/releases) installato e presente nel `PATH`:
+
+```powershell
+.\gradlew :BorderlandsPlus:jpackageInstaller -PinstallerType=exe
+```
+
+Usa `-PinstallerType=msi` per il formato MSI. L'output è in `BorderlandsPlus/build/installer`. Questo passaggio non fa parte della release di default.
+
+### Note sulla distribuzione
+
+- **Eseguibile non firmato:** Windows SmartScreen e alcuni antivirus possono segnalare l'app, anche perché scrive nella memoria di un altro processo. Se la distribuisci pubblicamente, valuta di firmarla con `signtool` e di allegare l'hash dello zip.
+- **Privilegi:** l'app parte con i permessi normali. Se il gioco gira come amministratore e l'attach fallisce con "Access denied", avvia `BorderlandsPlus.exe` con "Esegui come amministratore".
+- **Icona:** l'icona dell'eseguibile è `src/main/packaging/BorderlandsPlus.ico` (multi-risoluzione, da 16 a 256 px), quella della finestra è `src/main/resources/assets/icon.png`. Per cambiarla sostituisci entrambi i file mantenendo i nomi.
+
 ## Struttura del progetto
 
 ```
 BorderlandsPlus/
 ├── docs/                      # screenshot usati in questo README
 └── src/main/
+    ├── packaging/             # icona (.ico) usata da jpackage
     ├── java/com/rover/blplus/
     │   ├── Launcher.java      # entry point
     │   ├── Config.java        # nome eseguibile, pattern AOB

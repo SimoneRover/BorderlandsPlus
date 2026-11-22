@@ -8,7 +8,7 @@
     <Console name="CONSOLE">
         <PatternLayout pattern="%d{dd/MM/yyyy} - %d{HH:mm:ss,SSS} %t %-5p %c - %m%n"/>
     </Console>
-    <File name="MAIN" fileName="logs/main.log">
+    <File name="MAIN" fileName="${env:LOCALAPPDATA:-${sys:user.home}}/BorderlandsPlus/logs/main.log">
         <PatternLayout pattern="%d{dd/MM/yyyy} - %d{HH:mm:ss,SSS} %t %-5p %c - %m%n"/>
     </File>
 </Appenders>
