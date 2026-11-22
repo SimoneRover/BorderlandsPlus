@@ -297,6 +297,20 @@
     -fx-text-fill: -accent;
 }
 
+/* Spinner: anello tenue + arco arancio che ruota */
+.spinner-track {
+    -fx-fill: transparent;
+    -fx-stroke: #2c313d;
+    -fx-stroke-width: 5;
+}
+
+.spinner-arc {
+    -fx-fill: transparent;
+    -fx-stroke: -accent;
+    -fx-stroke-width: 5;
+    -fx-stroke-line-cap: round;
+}
+
 .attach-status {
     -fx-font-size: 13px;
     -fx-text-fill: -text-muted;

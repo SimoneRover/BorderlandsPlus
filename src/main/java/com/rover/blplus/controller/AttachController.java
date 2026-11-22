@@ -1,28 +1,21 @@
 package com.rover.blplus.controller;
 
-import com.rover.blplus.Addresses;
 import com.rover.blplus.gui.MainApp;
-import com.rover.blplus.process.exception.ProcessException;
 import com.rover.blplus.task.AttachTask;
 
-import com.rover.blplus.task.WaitTask;
 import com.rover.utility.os.OS;
 import com.rover.utility.os.OSUtils;
-import com.rover.utility.process.BrokenPointerChainException;
-import com.sun.jna.Pointer;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class AttachController {
 
@@ -33,15 +26,13 @@ public class AttachController {
     @FXML
     private Label label;
     @FXML
-    private ImageView image;
+    private Pane spinner;
 
-    private final Image spinner;
     private final RotateTransition loading;
     private final MainApp app;
 
     public AttachController(MainApp app) {
         this.app = app;
-        spinner = new Image( Objects.requireNonNull( getClass().getClassLoader().getResourceAsStream("assets/spinner.png") ));
         loading = new RotateTransition();
         loading.setDuration(Duration.millis(1000));
         loading.setInterpolator(Interpolator.LINEAR);
@@ -52,8 +43,7 @@ public class AttachController {
 
     @FXML
     public void initialize() {
-        image.setImage(spinner);
-        loading.setNode(image);
+        loading.setNode(spinner);
         checkOS();
         attach();
     }
@@ -116,14 +106,14 @@ public class AttachController {
         button.setManaged(false);
         button.setVisible(false);
 
-        image.setManaged(true);
-        image.setVisible(true);
+        spinner.setManaged(true);
+        spinner.setVisible(true);
         loading.play();
     }
 
     private void showButton() {
-        image.setManaged(false);
-        image.setVisible(false);
+        spinner.setManaged(false);
+        spinner.setVisible(false);
         loading.stop();
 
         button.setManaged(true);
@@ -131,8 +121,8 @@ public class AttachController {
     }
 
     private void hideLoading() {
-        image.setManaged(false);
-        image.setVisible(false);
+        spinner.setManaged(false);
+        spinner.setVisible(false);
         loading.stop();
     }
 }
